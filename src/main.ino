@@ -66,12 +66,12 @@ void setup()
 
     Serial.println("Initializing WebAssembly...");
 
-    init();
+    wasm_init();
 
-    Z_setupZ_vv();
+    wasm_Z_setupZ_vv();
 }
 
 void loop()
 {
-    Z_loopZ_vv();
+    wasm_Z_loopZ_vv();
 }

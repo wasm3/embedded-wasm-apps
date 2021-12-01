@@ -23,6 +23,8 @@
 extern "C" {
 #endif
 
+#define WASM_RT_MODULE_PREFIX wasm_
+
 /** Maximum stack depth before trapping. This can be configured by defining
  * this symbol before including wasm-rt when building the generated c files,
  * for example:

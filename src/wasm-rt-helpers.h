@@ -13,12 +13,12 @@ typedef u32 wasm_ptr;
 
 #define IMPORT_IMPL(name, ret, params, body)            \
   static ret _##name params body                        \
-  ret (*WASM_RT_ADD_PREFIX(name)) params = _##name;
+  ret (*name) params = _##name;
 
 #define IMPORT_IMPL_PARTICLE(name, ret, params, body)   \
   IMPORT_IMPL(Z_particle##name, ret,  params, body)
 
-#define IMPORT_IMPL_WIRING(name, ret, params, body)   \
+#define IMPORT_IMPL_WIRING(name, ret, params, body)     \
   IMPORT_IMPL(Z_wiring##name, ret,  params, body)
 
 #define MEMACCESS(addr) ((void*)&WASM_RT_ADD_PREFIX(Z_memory)->data[(addr)])
