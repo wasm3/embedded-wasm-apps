@@ -12,10 +12,10 @@ etc. apps on any platform
 The approach is similar to [`WasmBoxC`](https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html):
 
 1. Compile source code to `wasm`
-2. Translate `wasm` to `C` (using [`wasm2c`](https://github.com/WebAssembly/wabt/blob/main/wasm2c/README.md) from WABT)
-3. Compile produced `C` and link with a thin runtime implementation, using the **native platform toolchain**
+2. Translate `wasm` to `C` using [`wasm2c`](https://github.com/WebAssembly/wabt/blob/main/wasm2c/README.md)
+3. Compile produced `C`, link with a thin runtime implementation using the **native platform toolchain**
 
-![LIVE DEMO](docs/how-it-works.png)
+![How it works](docs/how-it-works.png)
 
 ## Benefits
 - Language/toolchain decoupling
