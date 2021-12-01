@@ -15,6 +15,8 @@ The approach is similar to [`WasmBoxC`](https://kripken.github.io/blog/wasm/2020
 2. Translate `wasm` to `C` (using [`wasm2c`](https://github.com/WebAssembly/wabt/blob/main/wasm2c/README.md) from WABT)
 3. Compile produced `C` and link with a thin runtime implementation, using the **native platform toolchain**
 
+![LIVE DEMO](docs/how-it-works.png)
+
 ## Benefits
 - Language/toolchain decoupling
 - Moderate runtime overhead (mostly depends on the source language/runtime)
