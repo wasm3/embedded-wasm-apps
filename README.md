@@ -7,6 +7,27 @@ Run statically-compiled
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/zig.svg" width="18" height="18" /> Zig](apps/zig/main.zig), 
 etc. on any embedded platform, using WebAssembly
 
+## Example
+```log
+$ make APP=rust
+$ pio run -e esp32 -t upload
+$ pio device monitor
+Initializing WebAssembly...
+🦀 Rust is running!
+
+$ make APP=assemblyscript
+$ pio run -e esp32 -t upload
+$ pio device monitor
+Initializing WebAssembly...
+🚀 AssemblyScript is running!
+
+$ make APP=tinygo
+$ pio run -e esp32 -t upload
+$ pio device monitor
+Initializing WebAssembly...
+🤖 TinyGo is running!
+```
+
 ## Building `WASM` apps
 
 Ensure [`WABT`](https://github.com/WebAssembly/wabt) and [`Binarien`](https://github.com/WebAssembly/binaryen) tools are in your `PATH`.
