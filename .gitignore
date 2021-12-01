@@ -1,0 +1,4 @@
+.pio/
+*.bin
+*.wasm
+src/wasm-app.*
