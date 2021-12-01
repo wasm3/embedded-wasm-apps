@@ -43,11 +43,13 @@ particle_monitor:
 
 ### PlatformIO helpers
 
+ENV     ?= esp32
+
 pio_compile: all
-	@pio run
+	@pio run -e $(ENV)
 
 pio_upload: all
-	@pio run -t upload
+	@pio run -e $(ENV) -t upload
 
 pio_monitor:
 	@pio device monitor --quiet
