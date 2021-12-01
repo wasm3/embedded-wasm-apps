@@ -32,16 +32,23 @@ make APP=tinygo
 make APP=zig
 ```
 
-## Building and running on `PlatformIO`
+## Building and running with `PlatformIO`
 
 ```sh
-pio run -t upload
+# For ESP32:
+pio run -e esp32 -t upload
+
+# For ESP8266:
+pio run -e esp8266 -t upload
 
 # Open serial monitor
 pio device monitor
 ```
 
-## Building and running on `Particle`
+## Building and running with `Particle`
+
+Requires [`particle-cli`](https://docs.particle.io/tutorials/developer-tools/cli/).
+Should work on all Particle devices i.e. `Spark Core`, `Photon`, `Electron`, `Argon`, `Boron`:
 
 ```sh
 particle flash MyDevice ./src/
