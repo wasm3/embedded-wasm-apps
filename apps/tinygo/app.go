@@ -5,7 +5,7 @@ import (
   "strconv"
 )
 
-var LED uint = 19
+var LED uint = 7
 
 //export setup
 func setup() {
