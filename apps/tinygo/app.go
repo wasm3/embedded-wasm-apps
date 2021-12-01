@@ -11,7 +11,7 @@ var LED uint = 7
 func setup() {
     PinMode(LED, OUTPUT)
 
-    Println("TinyGo is running 🤖")
+    Println("🤖 TinyGo is running!")
 }
 
 //export loop
