@@ -6,7 +6,7 @@ use arduino::*;
 #[no_mangle]
 pub extern fn r#setup() {
     pinMode(7, OUTPUT);
-    println("Rust is running 🦀");
+    println("🦀 Rust is running!");
 }
 
 #[no_mangle]
