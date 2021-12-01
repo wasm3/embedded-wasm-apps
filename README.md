@@ -9,9 +9,18 @@ etc. apps on any embedded platform, using WebAssembly
 
 ## How it works
 
+The approach is similar to [`WasmBoxC`](https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html):
+
 1. Compile source code to `wasm`
 2. Translate `wasm` to `C` (using [`wasm2c`](https://github.com/WebAssembly/wabt/blob/main/wasm2c/README.md) from WABT)
 3. Compile produced `C` and link with a thin runtime implementation, using the **native platform toolchain**
+
+## Benefits
+- Language/toolchain decoupling
+- Moderate runtime overhead (mostly depends on the source language/runtime)
+- Sandboxing
+- Software-based memory virtualization
+- SFI (Software Fault Isolation)
 
 ## Example
 ```log
