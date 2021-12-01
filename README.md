@@ -1,21 +1,29 @@
 # embedded-wasm-apps
-Run statically-compiled
+Run **native, statically-compiled**
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/assemblyscript.svg" width="18" height="18" /> AssemblyScript](apps/assemblyscript/app.ts), 
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/rust.svg" width="18" height="18" /> Rust](apps/rust/src/app.rs), 
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/cplusplus.svg" width="18" height="18" /> C/C++](apps/cpp/app.cpp), 
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/go.svg" width="18" height="18" /> TinyGo](apps/tinygo/app.go), 
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/zig.svg" width="18" height="18" /> Zig](apps/zig/main.zig), 
-etc. on any embedded platform, using WebAssembly
+etc. apps on any embedded platform, using WebAssembly
+
+## How it works
+
+1. Compile source code to `wasm`
+2. Translate `wasm` to `C` (using [`wasm2c`](https://github.com/WebAssembly/wabt/blob/main/wasm2c/README.md) from WABT)
+3. Compile produced `C` and link with a thin runtime implementation, using the **native platform toolchain**
 
 ## Example
 ```log
 $ make APP=rust
+    Finished release [optimized] target(s) in 0.00s
 $ pio run -e esp32 -t upload
 $ pio device monitor
 Initializing WebAssembly...
 🦀 Rust is running!
 
 $ make APP=assemblyscript
+    > npm run asbuild:optimized
 $ pio run -e esp32 -t upload
 $ pio device monitor
 Initializing WebAssembly...
