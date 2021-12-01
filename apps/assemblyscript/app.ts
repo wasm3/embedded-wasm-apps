@@ -5,7 +5,7 @@ let LED = 7;
 export function setup(): void {
   dev.pinMode(LED, dev.OUTPUT);
 
-  dev.println('AssemblyScript is running 🚀')
+  dev.println('🚀 AssemblyScript is running!')
 }
 
 export function loop(): void {
