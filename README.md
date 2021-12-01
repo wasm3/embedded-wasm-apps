@@ -9,15 +9,26 @@ etc. on any embedded platform, using WebAssembly
 
 ## Building `WASM` apps
 
+Ensure [`WABT`](https://github.com/WebAssembly/wabt) and [`Binarien`](https://github.com/WebAssembly/binaryen) tools are in your `PATH`.
+
 ```sh
+# AssemblyScript (needs Node.js)
+cd apps/assemblyscript
+npm install
+cd ../..
 make APP=assemblyscript
 
+# Rust
+rustup target add wasm32-unknown-unknown
 make APP=rust
 
-make APP=cplusplus
+# C/C++ (needs wasienv)
+make APP=cpp
 
-make APP=go
+# TinyGo (needs TinyGo v0.21.0 and Go v1.17.3)
+make APP=tinygo
 
+# TinyGo (needs Zig v0.9.0)
 make APP=zig
 ```
 
