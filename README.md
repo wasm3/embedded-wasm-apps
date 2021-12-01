@@ -71,7 +71,7 @@ pio run -e esp32 -t upload
 pio run -e esp8266 -t upload
 
 # Open serial monitor
-pio device monitor
+pio device monitor --quiet
 ```
 
 ## Building and running with `Particle`
