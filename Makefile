@@ -3,12 +3,12 @@
 
 DEVICE   ?= "Photon"
 DEV_TYPE ?= photon
-APP_LANG ?= assemblyscript
+APP ?= assemblyscript
 
 all:
-	-@rm apps/$(APP_LANG)/app.wasm
-	cd apps/$(APP_LANG) && ./build.sh
-	@cp apps/$(APP_LANG)/app.wasm ./
+	-@rm apps/$(APP)/app.wasm
+	cd apps/$(APP) && ./build.sh
+	@cp apps/$(APP)/app.wasm ./
 	wasm2c app.wasm -o wasm-app.c
 	@mv wasm-app.* ./src
 	@rm app.wasm
