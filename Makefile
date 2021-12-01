@@ -1,8 +1,6 @@
 
 .PHONY: all clean
 
-DEVICE   ?= "Photon"
-DEV_TYPE ?= photon
 APP ?= assemblyscript
 
 all:
@@ -18,24 +16,39 @@ clean:
 	-@rm -rf ./build ./.pio
 	-@rm *_firmware_*.bin
 
-############################
-### UPLOAD
-############################
-compile: all
+
+### Particle helpers
+
+DEVICE   ?= "Photon"
+DEV_TYPE ?= photon
+
+particle_compile: all
 	@particle compile $(DEV_TYPE) ./src
 
-erase:
+particle_erase:
 	@particle usb dfu
 	@particle flash --usb tinker
 
-upload:
+particle_upload:
 	@particle flash $(DEVICE) ./src/
 
-upload_usb: clean compile
+particle_upload_usb: clean compile
 	@particle usb dfu
 	@particle flash --usb *_firmware_*.bin
 	-@rm *_firmware_*.bin
 
-monitor:
-	#@particle serial monitor --follow
-	@pio device monitor
+particle_monitor:
+	@particle serial monitor --follow
+
+
+### PlatformIO helpers
+
+pio_compile: all
+	@pio run
+
+pio_upload: all
+	@pio run -t upload
+
+pio_monitor:
+	@pio device monitor --quiet
+

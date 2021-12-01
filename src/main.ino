@@ -1,6 +1,6 @@
 /*
- * Project particle-wasm-apps
- * Description: Run TinyGo, AssemblyScript, Rust, CPP apps on Particle
+ * Project:     embedded-wasm-apps
+ * Description: Run sandboxed TinyGo, AssemblyScript, Rust, CPP apps on embedded/IoT devices
  * Author:      Volodymyr Shymanskyy
  * Date:        30.11.2021
  */
@@ -60,9 +60,9 @@ IMPORT_IMPL_WIRING(Z_printZ_vii, void, (wasm_ptr buf, u32 len), {
 void setup()
 {
     Serial.begin(115200);
-    delay(1000);
-
     platform_init();
+
+    delay(500);
 
     Serial.println("Initializing WebAssembly...");
 
@@ -75,3 +75,4 @@ void loop()
 {
     wasm_Z_loopZ_vv();
 }
+
