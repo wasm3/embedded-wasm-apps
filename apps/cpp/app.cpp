@@ -1,12 +1,11 @@
 
 #include "arduino_api.h"
 
-WASM_EXPORT
-volatile int LED_BUILTIN = 19;
+volatile int LED_BUILTIN = 7;
 
 WASM_EXPORT
 void setup() {
-  println("C++ is running 🤩");
+  println("🤩 C++ is running!");
 
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
