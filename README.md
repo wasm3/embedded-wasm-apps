@@ -47,7 +47,7 @@ Initializing WebAssembly...
 
 ## Building `WASM` apps
 
-Ensure [`WABT`](https://github.com/WebAssembly/wabt) and [`Binarien`](https://github.com/WebAssembly/binaryen) tools are in your `PATH`.
+Ensure [`WABT`](https://github.com/WebAssembly/wabt) and [`Binaryen`](https://github.com/WebAssembly/binaryen) tools are in your `PATH`.
 
 ```sh
 # AssemblyScript (needs Node.js)
