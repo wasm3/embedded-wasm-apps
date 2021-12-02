@@ -14,6 +14,7 @@ SYSTEM_THREAD(ENABLED)
 
 void platform_init() {
     Particle.connect();
+    delay(1000); // Additional delay for serial monitor
 }
 
 IMPORT_IMPL_PARTICLE(Z_publishZ_vi, void, (wasm_ptr ev), {
