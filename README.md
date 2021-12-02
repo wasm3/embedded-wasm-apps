@@ -68,7 +68,7 @@ make APP=cpp
 # TinyGo (needs TinyGo v0.21.0 and Go v1.17.3)
 make APP=tinygo
 
-# TinyGo (needs Zig v0.9.0)
+# Zig (needs Zig v0.9.0)
 make APP=zig
 ```
 
@@ -80,6 +80,9 @@ pio run -e esp32 -t upload
 
 # For ESP8266:
 pio run -e esp8266 -t upload
+
+# For Raspberry Pi Pico:
+pio run -e rpi-pico -t upload
 
 # Open serial monitor
 pio device monitor --quiet
