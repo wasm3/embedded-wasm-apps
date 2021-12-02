@@ -22,13 +22,18 @@ IMPORT_IMPL_PARTICLE(Z_publishZ_vi, void, (wasm_ptr ev), {
 
 #else
 
-void platform_init() {
-}
+void platform_init() {}
 
 #endif
 
-IMPORT_IMPL(Z_wasi_snapshot_preview1Z_fd_writeZ_iiiii, u32, (u32 fd, wasm_ptr iovs_ptr, u32 iovs_len, wasm_ptr nwritten), {
-    return 58;
+
+IMPORT_IMPL_WIRING(Z_stopWdtZ_vv, void, (void), {
+#if defined(ESP8266)
+    ESP.wdtDisable();
+    *((volatile uint32_t*) 0x60000900) &= ~(1); // Hardware WDT OFF
+#elif defined(ESP32)
+    disableCore0WDT();
+#endif
 });
 
 IMPORT_IMPL_WIRING(Z_delayZ_vi, void, (u32 t), {
@@ -53,7 +58,6 @@ IMPORT_IMPL_WIRING(Z_digitalWriteZ_vii, void, (u32 pin, u32 value), {
 
 
 IMPORT_IMPL_WIRING(Z_printZ_vii, void, (wasm_ptr buf, u32 len), {
-    //Serial.printf("print mem:0x%x, off:0x%x, len:%d\n", (void*)(Z_memory->data), buf, len);
     Serial.write((const uint8_t*)MEMACCESS(buf), len);
 });
 
