@@ -1,6 +1,6 @@
 const w = @import("./wiring.zig");
 
-const LED = 7;
+const LED = 2;
 
 export fn setup() void {
     w.println("⚡ Zig is running!");

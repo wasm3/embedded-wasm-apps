@@ -23,7 +23,11 @@
 extern "C" {
 #endif
 
-#define WASM_RT_MODULE_PREFIX wasm_
+#define WASM_RT_MODULE_PREFIX       wasm_
+
+#ifndef WASM_RT_MEMORY_LIMIT
+#define WASM_RT_MEMORY_LIMIT        (8*1024)
+#endif
 
 /** Maximum stack depth before trapping. This can be configured by defining
  * this symbol before including wasm-rt when building the generated c files,

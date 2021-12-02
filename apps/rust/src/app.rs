@@ -3,16 +3,18 @@
 mod wiring;
 use wiring::*;
 
+const LED: u32 = 2;
+
 #[no_mangle]
 pub extern fn setup() {
-    pinMode(7, OUTPUT);
+    pinMode(LED, OUTPUT);
     println("🦀 Rust is running!");
 }
 
 #[no_mangle]
 pub extern fn r#loop() {
-    digitalWrite(7, HIGH);
+    digitalWrite(LED, HIGH);
     delay(100);
-    digitalWrite(7, LOW);
+    digitalWrite(LED, LOW);
     delay(900);
 }

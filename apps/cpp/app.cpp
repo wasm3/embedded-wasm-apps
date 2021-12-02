@@ -1,7 +1,7 @@
 
 #include "wiring_api.h"
 
-volatile int LED_BUILTIN = 7;
+int LED_BUILTIN = 2;
 
 WASM_EXPORT
 void setup() {

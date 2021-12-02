@@ -115,7 +115,7 @@ static void signal_handler(int sig, siginfo_t* si, void* unused) {
 void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
                              uint32_t initial_pages,
                              uint32_t max_pages) {
-  uint32_t byte_length = 8*1024; //initial_pages * PAGE_SIZE;
+  uint32_t byte_length = WASM_RT_MEMORY_LIMIT; //TODO: initial_pages * PAGE_SIZE;
 #if WASM_RT_MEMCHECK_SIGNAL_HANDLER_POSIX
   if (!g_signal_handler_installed) {
     g_signal_handler_installed = true;
