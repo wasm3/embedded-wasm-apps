@@ -20,9 +20,9 @@ The approach is similar to [`WasmBoxC`](https://kripken.github.io/blog/wasm/2020
 ## Benefits
 - Language/toolchain decoupling
 - Moderate runtime overhead (mostly depends on the source language/runtime)
-- Sandboxing
+- Enables wasm transformations, like instrumentation or [`gas metering`](https://github.com/wasm3/wasm3/blob/main/docs/Cookbook.md#gas-metering)
+- Sandboxing / SFI (Software Fault Isolation)
 - Software-based memory virtualization
-- SFI (Software Fault Isolation)
 
 ## Example
 ```log
