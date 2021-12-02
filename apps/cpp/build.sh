@@ -1,7 +1,7 @@
 # Compile
 wasicc  -Os                                                   \
         -z stack-size=4096 -Wl,--initial-memory=65536         \
-        -Wl,--allow-undefined-file=arduino_api.syms           \
+        -Wl,--allow-undefined-file=wiring_api.syms            \
         -Wl,--strip-all -Wl,--no-entry -nostdlib              \
         -o app.wasm app.cpp
 

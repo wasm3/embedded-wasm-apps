@@ -1,5 +1,5 @@
-#ifndef arduino_wasm_api_h
-#define arduino_wasm_api_h
+#ifndef wiring_wasm_api_h
+#define wiring_wasm_api_h
 
 #include <stdint.h>
 
@@ -40,4 +40,4 @@ static inline void println (const char* s) {
 
 }
 
-#endif // arduino_wasm_api_h
+#endif // wiring_wasm_api_h

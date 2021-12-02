@@ -1,7 +1,7 @@
 #![no_std]
 
-mod arduino;
-use arduino::*;
+mod wiring;
+use wiring::*;
 
 #[no_mangle]
 pub extern fn setup() {

@@ -1,5 +1,5 @@
 
-#include "arduino_api.h"
+#include "wiring_api.h"
 
 volatile int LED_BUILTIN = 7;
 
