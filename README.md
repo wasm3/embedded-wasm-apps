@@ -99,3 +99,6 @@ particle flash MyDevice ./src/
 # Open serial monitor
 particle serial monitor --follow
 ```
+
+### License
+This project is released under The MIT License (MIT)
