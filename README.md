@@ -9,7 +9,7 @@ etc.
 
 ## How it works
 
-This **does not** use [`Wasm3`](https://github.com/wasm3/wasm3) engine. The approach is similar to [`WasmBoxC`](https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html):
+This **does not** use [`Wasm3`](https://github.com/wasm3/wasm3) engine. The approach is similar to [`WasmBoxC`](https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html) or [`RLBox`](https://hacks.mozilla.org/2020/02/securing-firefox-with-webassembly/):
 
 1. Compile source code to `wasm`
 2. Translate `wasm` to `C` using [`wasm2c`](https://github.com/WebAssembly/wabt/blob/main/wasm2c/README.md)
