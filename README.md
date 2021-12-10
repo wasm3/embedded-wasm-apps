@@ -19,10 +19,14 @@ This **does not** use [`Wasm3`](https://github.com/wasm3/wasm3) engine. The appr
 
 ## Benefits
 - Language/toolchain decoupling
-- Moderate runtime overhead (mostly depends on the source language/runtime)
-- Enables wasm transformations, like instrumentation or [`gas metering`](https://github.com/wasm3/wasm3/blob/main/docs/Cookbook.md#gas-metering)
+- Resilience against attacks (RCE, Control-flow hijacking)
 - Sandboxing / SFI (Software Fault Isolation)
+- Enables wasm transformations, like instrumentation or [`gas metering`](https://github.com/wasm3/wasm3/blob/main/docs/Cookbook.md#gas-metering)
 - Software-based memory virtualization
+- Moderate runtime overhead (mostly depends on the source language/runtime)
+    - Small performance hit (~50% slowdown)
+    - Moderate binary size increase
+- Highly portable
 
 ## Example
 ```log
