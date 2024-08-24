@@ -26,7 +26,7 @@ This **does not** use [`Wasm3`](https://github.com/wasm3/wasm3) engine. The appr
 - Enables wasm transformations, like instrumentation or [`gas metering`](https://github.com/wasm3/wasm3/blob/main/docs/Cookbook.md#gas-metering)
 - Software-based memory virtualization
 - Moderate runtime overhead (mostly depends on the source language/runtime)
-    - Small performance hit (~50% slowdown)
+    - Small performance hit (~10-30% slowdown compared to native modules)
     - Moderate binary size increase
 - Highly portable
 
