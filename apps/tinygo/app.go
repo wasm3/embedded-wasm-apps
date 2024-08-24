@@ -2,7 +2,7 @@ package main
 
 import (
   . "./wiring"
-  //"strconv"
+  "strconv"
 )
 
 var LED uint = 2
@@ -16,10 +16,8 @@ func setup() {
 
 //export loop
 func loop() {
-    //time := Millis()
-    //Println(strconv.FormatUint(uint64(time), 10))
-
-    Println("Blink")
+    t := strconv.FormatUint(uint64(Millis()), 10)
+    Println(t + " Blink")
 
     DigitalWrite(LED, HIGH)
     Delay(100)

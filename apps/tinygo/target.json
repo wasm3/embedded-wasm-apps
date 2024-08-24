@@ -1,8 +1,30 @@
 {
-    "inherits": [ "wasm" ],
+    "llvm-target":   "wasm32-unknown-unknown",
+    "cpu":           "generic",
+    "features":      "+bulk-memory,+mutable-globals,+nontrapping-fptoint,+sign-ext",
+    "build-tags":    ["tinygo.wasm", "wasm_unknown"],
+    "goos":          "linux",
+    "goarch":        "arm",
+    "linker":        "wasm-ld",
+    "rtlib":         "compiler-rt",
+    "libc":          "wasmbuiltins",
+    "scheduler":     "none",
+    "gc":            "leaking",
+    "default-stack-size": 4096,
+    "cflags": [
+        "-mbulk-memory",
+        "-mnontrapping-fptoint",
+        "-msign-ext"
+    ],
     "ldflags": [
         "--initial-memory=65536",
         "--max-memory=65536",
-        "-zstack-size=2048"
+        "-zstack-size=4096",
+        "--stack-first",
+        "--no-demangle",
+        "--entry=_initialize"
+    ],
+    "extra-files": [
+        "src/runtime/asm_tinygowasm.S"
     ]
 }

@@ -65,6 +65,12 @@ void w2c_wiring_print(struct w2c_wiring*, u32 offset, u32 len) {
     Serial.write((const uint8_t*)wasm_app.w2c_memory.data + offset, len);
 }
 
+__attribute__((weak))
+void w2c_app_0x5Finitialize(w2c_app*) {}
+
+__attribute__((weak))
+void w2c_app_0x5Fstart(w2c_app*) {}
+
 void setup()
 {
     Serial.begin(115200);
@@ -76,6 +82,9 @@ void setup()
 
     wasm_rt_init();
     wasm2c_app_instantiate(&wasm_app, NULL);
+
+    w2c_app_0x5Finitialize(&wasm_app);
+    w2c_app_0x5Fstart(&wasm_app);
 
     w2c_app_setup(&wasm_app);
 }

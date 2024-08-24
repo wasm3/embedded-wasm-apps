@@ -4,9 +4,7 @@ export PATH=/opt/tinygo-v0.33.0/bin:$GOROOT/bin:$PATH
 export GO111MODULE=off
 
 # Compile
-tinygo  build -target ./target.json       \
-        -panic trap                       \
-        -o app.wasm app.go
+tinygo build -target ./target.json -o app.wasm app.go
 
 # Optimize (optional)
 wasm-opt -Os app.wasm -o app.wasm

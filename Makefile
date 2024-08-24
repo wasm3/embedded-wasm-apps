@@ -6,13 +6,11 @@ APP ?= assemblyscript
 all:
 	-@rm apps/$(APP)/app.wasm
 	cd apps/$(APP) && ./build.sh
-	@cp apps/$(APP)/app.wasm ./
-	wasm2c app.wasm -o wasm-app.c
-	@mv wasm-app.* ./src
-	@rm app.wasm
+	-@rm ./src/wasm-app*
+	wasm2c --no-debug-names --module-name="app" --num-outputs=8 apps/$(APP)/app.wasm -o src/wasm-app.c
 
 clean:
-	-@rm ./src/wasm-app.*
+	-@rm ./src/wasm-app*
 	-@rm apps/*/app.wasm apps/*/app.wat
 	-@rm -rf ./build ./.pio
 	-@rm *_firmware_*.bin
