@@ -3,6 +3,8 @@ export GOROOT=/opt/go-v1.23.0
 export PATH=/opt/tinygo-v0.33.0/bin:$GOROOT/bin:$PATH
 export GO111MODULE=off
 
+# TODO: https://github.com/tinygo-org/tinygo/issues/4223
+
 # Compile
 tinygo build -target ./target.json -o app.wasm app.go
 
