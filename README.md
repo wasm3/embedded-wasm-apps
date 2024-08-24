@@ -1,6 +1,7 @@
 [![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
 
 # embedded-wasm-apps
+
 Run **native, statically-compiled** apps on any platform, using WebAssembly.  
 Examples include [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/assemblyscript.svg" width="18" height="18" /> AssemblyScript](apps/assemblyscript/app.ts), 
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/rust.svg" width="18" height="18" /> Rust](apps/rust/src/app.rs), 
@@ -11,7 +12,7 @@ etc.
 
 ## How it works
 
-This **does not** use [`Wasm3`](https://github.com/wasm3/wasm3) engine. The approach is similar to [`WasmBoxC`](https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html) or [`RLBox`](https://hacks.mozilla.org/2020/02/securing-firefox-with-webassembly/):
+This does not use [`Wasm3`](https://github.com/wasm3/wasm3) engine. The approach is similar to [`WasmBoxC`](https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html) or [`RLBox`](https://hacks.mozilla.org/2020/02/securing-firefox-with-webassembly/):
 
 1. Compile source code to `wasm`
 2. Translate `wasm` to `C` using [`wasm2c`](https://github.com/WebAssembly/wabt/blob/main/wasm2c/README.md)
@@ -20,6 +21,7 @@ This **does not** use [`Wasm3`](https://github.com/wasm3/wasm3) engine. The appr
 ![How it works](docs/how-it-works.png)
 
 ## Benefits
+
 - Language/toolchain decoupling
 - Resilience against attacks (RCE, Control-flow hijacking)
 - Sandboxing / SFI (Software Fault Isolation)
@@ -31,6 +33,7 @@ This **does not** use [`Wasm3`](https://github.com/wasm3/wasm3) engine. The appr
 - Highly portable
 
 ## Example
+
 ```log
 $ make APP=rust
     Finished release [optimized] target(s) in 0.00s
@@ -55,26 +58,28 @@ Initializing WebAssembly...
 
 ## Building `WASM` apps
 
-Ensure [`WABT`](https://github.com/WebAssembly/wabt) and [`Binaryen`](https://github.com/WebAssembly/binaryen) tools are in your `PATH`.
+Ensure the required tools are in your `PATH`:
+- [`WABT v1.0.36`](https://github.com/WebAssembly/wabt/releases/tag/1.0.36)
+- [`Binaryen v118`](https://github.com/WebAssembly/binaryen/releases/tag/version_118)
 
 ```sh
-# AssemblyScript (needs Node.js)
+# AssemblyScript v0.27 (needs Node.js)
 cd apps/assemblyscript
 npm install
 cd ../..
 make APP=assemblyscript
 
-# Rust
+# Rust 1.80.1
 rustup target add wasm32-unknown-unknown
 make APP=rust
 
 # C/C++ (needs wasienv)
 make APP=cpp
 
-# TinyGo (needs TinyGo v0.21.0 and Go v1.17.3)
+# TinyGo v0.33.0 + Go v1.23.0
 make APP=tinygo
 
-# Zig (needs Zig v0.9.0)
+# Zig v0.13.0
 make APP=zig
 ```
 
@@ -107,4 +112,5 @@ particle serial monitor --follow
 ```
 
 ### License
+
 This project is released under The MIT License (MIT)

@@ -13,6 +13,8 @@ pub extern fn setup() {
 
 #[no_mangle]
 pub extern fn r#loop() {
+    println("Blink");
+
     digitalWrite(LED, HIGH);
     delay(100);
     digitalWrite(LED, LOW);

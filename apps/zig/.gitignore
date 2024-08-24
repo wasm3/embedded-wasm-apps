@@ -1,3 +1,4 @@
 zig-cache/
 *.wat
 *.wasm
+*.wasm.o

@@ -14,6 +14,8 @@ void setup() {
 // the loop function runs over and over again forever
 WASM_EXPORT
 void loop() {
+  println("Blink");
+
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
   delay(100);                        // wait 100ms
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW

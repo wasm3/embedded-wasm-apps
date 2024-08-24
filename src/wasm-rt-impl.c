@@ -17,6 +17,7 @@
 #include "wasm-rt-impl.h"
 
 #include <assert.h>
+#include <math.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -24,176 +25,275 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if WASM_RT_MEMCHECK_SIGNAL_HANDLER_POSIX
+#if WASM_RT_INSTALL_SIGNAL_HANDLER && !defined(_WIN32)
 #include <signal.h>
-#include <sys/mman.h>
 #include <unistd.h>
 #endif
 
-#define PAGE_SIZE 65536
-
-typedef struct FuncType {
-  wasm_rt_type_t* params;
-  wasm_rt_type_t* results;
-  uint32_t param_count;
-  uint32_t result_count;
-} FuncType;
-
-uint32_t wasm_rt_call_stack_depth;
-uint32_t g_saved_call_stack_depth;
-
-#if WASM_RT_MEMCHECK_SIGNAL_HANDLER
-bool g_signal_handler_installed = false;
+#ifdef _WIN32
+#include <windows.h>
+#else
+//#include <sys/mman.h>
 #endif
 
-jmp_buf g_jmp_buf;
-//FuncType* g_func_types;
-//uint32_t g_func_type_count;
+#ifndef NDEBUG
+#define DEBUG_PRINTF(...) fprintf(stderr, __VA_ARGS__);
+#else
+#define DEBUG_PRINTF(...)
+#endif
+
+#if WASM_RT_INSTALL_SIGNAL_HANDLER
+static bool g_signal_handler_installed = false;
+#ifdef _WIN32
+static void* g_sig_handler_handle = 0;
+#endif
+#endif
+
+#if WASM_RT_STACK_DEPTH_COUNT
+WASM_RT_THREAD_LOCAL uint32_t wasm_rt_call_stack_depth;
+WASM_RT_THREAD_LOCAL uint32_t wasm_rt_saved_call_stack_depth;
+#elif WASM_RT_STACK_EXHAUSTION_HANDLER
+static WASM_RT_THREAD_LOCAL void* g_alt_stack = NULL;
+#endif
+
+WASM_RT_THREAD_LOCAL wasm_rt_jmp_buf g_wasm_rt_jmp_buf;
+
+#ifdef WASM_RT_TRAP_HANDLER
+extern void WASM_RT_TRAP_HANDLER(wasm_rt_trap_t code);
+#endif
 
 void wasm_rt_trap(wasm_rt_trap_t code) {
   assert(code != WASM_RT_TRAP_NONE);
-  wasm_rt_call_stack_depth = g_saved_call_stack_depth;
-  WASM_RT_LONGJMP(g_jmp_buf, code);
-}
+#if WASM_RT_STACK_DEPTH_COUNT
+  wasm_rt_call_stack_depth = wasm_rt_saved_call_stack_depth;
+#endif
 
-static bool func_types_are_equal(FuncType* a, FuncType* b) {
-  if (a->param_count != b->param_count || a->result_count != b->result_count)
-    return 0;
-  uint32_t i;
-  for (i = 0; i < a->param_count; ++i)
-    if (a->params[i] != b->params[i])
-      return 0;
-  for (i = 0; i < a->result_count; ++i)
-    if (a->results[i] != b->results[i])
-      return 0;
-  return 1;
-}
-
-uint32_t wasm_rt_register_func_type(uint32_t param_count,
-                                    uint32_t result_count,
-                                    ...) {
-#if 0
-  FuncType func_type;
-  func_type.param_count = param_count;
-  func_type.params = malloc(param_count * sizeof(wasm_rt_type_t));
-  func_type.result_count = result_count;
-  func_type.results = malloc(result_count * sizeof(wasm_rt_type_t));
-
-  va_list args;
-  va_start(args, result_count);
-
-  uint32_t i;
-  for (i = 0; i < param_count; ++i)
-    func_type.params[i] = va_arg(args, wasm_rt_type_t);
-  for (i = 0; i < result_count; ++i)
-    func_type.results[i] = va_arg(args, wasm_rt_type_t);
-  va_end(args);
-
-  for (i = 0; i < g_func_type_count; ++i) {
-    if (func_types_are_equal(&g_func_types[i], &func_type)) {
-      free(func_type.params);
-      free(func_type.results);
-      return i + 1;
-    }
-  }
-
-  uint32_t idx = g_func_type_count++;
-  g_func_types = realloc(g_func_types, g_func_type_count * sizeof(FuncType));
-  g_func_types[idx] = func_type;
-  return idx + 1;
+#ifdef WASM_RT_TRAP_HANDLER
+  WASM_RT_TRAP_HANDLER(code);
+  wasm_rt_unreachable();
 #else
-  return 0;
+  WASM_RT_LONGJMP(g_wasm_rt_jmp_buf, code);
 #endif
 }
 
-#if WASM_RT_MEMCHECK_SIGNAL_HANDLER_POSIX
-static void signal_handler(int sig, siginfo_t* si, void* unused) {
-  wasm_rt_trap(WASM_RT_TRAP_OOB);
-}
-#endif
+#ifdef _WIN32
 
-void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
-                             uint32_t initial_pages,
-                             uint32_t max_pages) {
-  uint32_t byte_length = WASM_RT_MEMORY_LIMIT; //TODO: initial_pages * PAGE_SIZE;
-#if WASM_RT_MEMCHECK_SIGNAL_HANDLER_POSIX
-  if (!g_signal_handler_installed) {
-    g_signal_handler_installed = true;
-    struct sigaction sa;
-    sa.sa_flags = SA_SIGINFO;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_sigaction = signal_handler;
+#if WASM_RT_INSTALL_SIGNAL_HANDLER
 
-    /* Install SIGSEGV and SIGBUS handlers, since macOS seems to use SIGBUS. */
-    if (sigaction(SIGSEGV, &sa, NULL) != 0 ||
-        sigaction(SIGBUS, &sa, NULL) != 0) {
-      perror("sigaction failed");
-      abort();
-    }
+static LONG os_signal_handler(PEXCEPTION_POINTERS info) {
+  if (info->ExceptionRecord->ExceptionCode == EXCEPTION_ACCESS_VIOLATION) {
+    wasm_rt_trap(WASM_RT_TRAP_OOB);
+  } else if (info->ExceptionRecord->ExceptionCode == EXCEPTION_STACK_OVERFLOW) {
+    wasm_rt_trap(WASM_RT_TRAP_EXHAUSTION);
   }
+  return EXCEPTION_CONTINUE_SEARCH;
+}
 
-  /* Reserve 8GiB. */
-  void* addr =
-      mmap(NULL, 0x200000000ul, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-  if (addr == (void*)-1) {
-    perror("mmap failed");
+static void os_install_signal_handler(void) {
+  g_sig_handler_handle =
+      AddVectoredExceptionHandler(1 /* CALL_FIRST */, os_signal_handler);
+}
+
+static void os_cleanup_signal_handler(void) {
+  RemoveVectoredExceptionHandler(g_sig_handler_handle);
+}
+
+#endif
+
+#else
+
+#if WASM_RT_INSTALL_SIGNAL_HANDLER
+static void os_signal_handler(int sig, siginfo_t* si, void* unused) {
+  if (si->si_code == SEGV_ACCERR) {
+    wasm_rt_trap(WASM_RT_TRAP_OOB);
+  } else {
+    wasm_rt_trap(WASM_RT_TRAP_EXHAUSTION);
+  }
+}
+
+static void os_install_signal_handler(void) {
+  struct sigaction sa;
+  memset(&sa, '\0', sizeof(sa));
+  sa.sa_flags = SA_SIGINFO;
+#if WASM_RT_STACK_EXHAUSTION_HANDLER
+  sa.sa_flags |= SA_ONSTACK;
+#endif
+  sigemptyset(&sa.sa_mask);
+  sa.sa_sigaction = os_signal_handler;
+
+  /* Install SIGSEGV and SIGBUS handlers, since macOS seems to use SIGBUS. */
+  if (sigaction(SIGSEGV, &sa, NULL) != 0 || sigaction(SIGBUS, &sa, NULL) != 0) {
+    perror("sigaction failed");
     abort();
   }
-  mprotect(addr, byte_length, PROT_READ | PROT_WRITE);
-  memory->data = addr;
-#else
-  memory->data = calloc(byte_length, 1);
-  //assert(memory->data);
-#endif
-  memory->size = byte_length;
-  memory->pages = initial_pages;
-  memory->max_pages = max_pages;
 }
 
-uint32_t wasm_rt_grow_memory(wasm_rt_memory_t* memory, uint32_t delta) {
-  uint32_t old_pages = memory->pages;
-  uint32_t new_pages = memory->pages + delta;
-  if (new_pages == 0) {
-    return 0;
+static void os_cleanup_signal_handler(void) {
+  /* Undo what was done in os_install_signal_handler */
+  struct sigaction sa;
+  memset(&sa, '\0', sizeof(sa));
+  sa.sa_handler = SIG_DFL;
+  if (sigaction(SIGSEGV, &sa, NULL) != 0 || sigaction(SIGBUS, &sa, NULL)) {
+    perror("sigaction failed");
+    abort();
   }
-  if (new_pages < old_pages || new_pages > memory->max_pages) {
-    return (uint32_t)-1;
-  }
-  uint32_t old_size = old_pages * PAGE_SIZE;
-  uint32_t new_size = new_pages * PAGE_SIZE;
-  uint32_t delta_size = delta * PAGE_SIZE;
-#if WASM_RT_MEMCHECK_SIGNAL_HANDLER_POSIX
-  uint8_t* new_data = memory->data;
-  mprotect(new_data + old_size, delta_size, PROT_READ | PROT_WRITE);
-#else
-  uint8_t* new_data;
-  if (new_size > old_size) {
-    new_data = realloc(memory->data, new_size);
-  } else {
-    new_data = memory->data;
-  }
-  if (new_data == NULL) {
-    return (uint32_t)-1;
-  }
-#if !WABT_BIG_ENDIAN
-  memset(new_data + old_size, 0, delta_size);
+}
 #endif
-#endif
-#if WABT_BIG_ENDIAN
-  memmove(new_data + new_size - old_size, new_data, old_size);
-  memset(new_data, 0, delta_size);
-#endif
-  memory->pages = new_pages;
-  memory->size = new_size;
-  memory->data = new_data;
-  return old_pages;
+
+#if WASM_RT_STACK_EXHAUSTION_HANDLER
+static bool os_has_altstack_installed() {
+  /* check for altstack already in place */
+  stack_t ss;
+  if (sigaltstack(NULL, &ss) != 0) {
+    perror("sigaltstack failed");
+    abort();
+  }
+
+  return !(ss.ss_flags & SS_DISABLE);
 }
 
-void wasm_rt_allocate_table(wasm_rt_table_t* table,
-                            uint32_t elements,
-                            uint32_t max_elements) {
-  table->size = elements;
-  table->max_size = max_elements;
-  table->data = calloc(table->size, sizeof(wasm_rt_elem_t));
-  //assert(table->data);
+/* These routines set up an altstack to handle SIGSEGV from stack overflow. */
+static void os_allocate_and_install_altstack(void) {
+  /* verify altstack not already allocated */
+  assert(!g_alt_stack &&
+         "wasm-rt error: tried to re-allocate thread-local alternate stack");
+
+  /* We could check and warn if an altstack is already installed, but some
+   * sanitizers install their own altstack, so this warning would fire
+   * spuriously and break the test outputs. */
+
+  /* allocate altstack */
+  g_alt_stack = malloc(SIGSTKSZ);
+  if (g_alt_stack == NULL) {
+    perror("malloc failed");
+    abort();
+  }
+
+  /* install altstack */
+  stack_t ss;
+  ss.ss_sp = g_alt_stack;
+  ss.ss_flags = 0;
+  ss.ss_size = SIGSTKSZ;
+  if (sigaltstack(&ss, NULL) != 0) {
+    perror("sigaltstack failed");
+    abort();
+  }
+}
+
+static void os_disable_and_deallocate_altstack(void) {
+  /* in debug build, verify altstack allocated */
+  assert(g_alt_stack &&
+         "wasm-rt error: thread-local alternate stack not allocated");
+
+  /* verify altstack was still in place */
+  stack_t ss;
+  if (sigaltstack(NULL, &ss) != 0) {
+    perror("sigaltstack failed");
+    abort();
+  }
+
+  if ((!g_alt_stack) || (ss.ss_flags & SS_DISABLE) ||
+      (ss.ss_sp != g_alt_stack) || (ss.ss_size != SIGSTKSZ)) {
+    DEBUG_PRINTF(
+        "wasm-rt warning: alternate stack was modified unexpectedly\n");
+    return;
+  }
+
+  /* disable and free */
+  ss.ss_flags = SS_DISABLE;
+  if (sigaltstack(&ss, NULL) != 0) {
+    perror("sigaltstack failed");
+    abort();
+  }
+  assert(!os_has_altstack_installed());
+  free(g_alt_stack);
+}
+#endif
+
+#endif
+
+void wasm_rt_init(void) {
+  wasm_rt_init_thread();
+#if WASM_RT_INSTALL_SIGNAL_HANDLER
+  if (!g_signal_handler_installed) {
+    g_signal_handler_installed = true;
+    os_install_signal_handler();
+  }
+#endif
+  assert(wasm_rt_is_initialized());
+}
+
+bool wasm_rt_is_initialized(void) {
+#if WASM_RT_STACK_EXHAUSTION_HANDLER
+  if (!os_has_altstack_installed()) {
+    return false;
+  }
+#endif
+#if WASM_RT_INSTALL_SIGNAL_HANDLER
+  return g_signal_handler_installed;
+#else
+  return true;
+#endif
+}
+
+void wasm_rt_free(void) {
+  assert(wasm_rt_is_initialized());
+#if WASM_RT_INSTALL_SIGNAL_HANDLER
+  os_cleanup_signal_handler();
+  g_signal_handler_installed = false;
+#endif
+  wasm_rt_free_thread();
+}
+
+void wasm_rt_init_thread(void) {
+#if WASM_RT_STACK_EXHAUSTION_HANDLER
+  os_allocate_and_install_altstack();
+#endif
+}
+
+void wasm_rt_free_thread(void) {
+#if WASM_RT_STACK_EXHAUSTION_HANDLER
+  os_disable_and_deallocate_altstack();
+#endif
+}
+
+// Include table operations for funcref
+#define WASM_RT_TABLE_OPS_FUNCREF
+#include "wasm-rt-impl-tableops.inc"
+#undef WASM_RT_TABLE_OPS_FUNCREF
+
+// Include table operations for externref
+#define WASM_RT_TABLE_OPS_EXTERNREF
+#include "wasm-rt-impl-tableops.inc"
+#undef WASM_RT_TABLE_OPS_EXTERNREF
+
+const char* wasm_rt_strerror(wasm_rt_trap_t trap) {
+  switch (trap) {
+    case WASM_RT_TRAP_NONE:
+      return "No error";
+    case WASM_RT_TRAP_OOB:
+#if WASM_RT_MERGED_OOB_AND_EXHAUSTION_TRAPS
+      return "Out-of-bounds access in linear memory or a table, or call stack "
+             "exhausted";
+#else
+      return "Out-of-bounds access in linear memory or a table";
+    case WASM_RT_TRAP_EXHAUSTION:
+      return "Call stack exhausted";
+#endif
+    case WASM_RT_TRAP_INT_OVERFLOW:
+      return "Integer overflow on divide or truncation";
+    case WASM_RT_TRAP_DIV_BY_ZERO:
+      return "Integer divide by zero";
+    case WASM_RT_TRAP_INVALID_CONVERSION:
+      return "Conversion from NaN to integer";
+    case WASM_RT_TRAP_UNREACHABLE:
+      return "Unreachable instruction executed";
+    case WASM_RT_TRAP_CALL_INDIRECT:
+      return "Invalid call_indirect or return_call_indirect";
+    case WASM_RT_TRAP_UNCAUGHT_EXCEPTION:
+      return "Uncaught exception";
+    case WASM_RT_TRAP_UNALIGNED:
+      return "Unaligned atomic memory access";
+  }
+  return "invalid trap code";
 }

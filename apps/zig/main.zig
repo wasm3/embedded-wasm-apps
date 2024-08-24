@@ -8,6 +8,8 @@ export fn setup() void {
 }
 
 export fn loop() void {
+    w.println("Blink");
+
     w.digitalWrite(LED, w.Digital.LOW);
     w.delay(900);
     w.digitalWrite(LED, w.Digital.HIGH);

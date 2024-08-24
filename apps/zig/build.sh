@@ -1,10 +1,10 @@
 # Prepare
-export PATH=/opt/zig-linux-x86_64-0.9.0:$PATH
+export PATH=/opt/zig-linux-x86_64-0.13.0:$PATH
 
 # Compile
-zig build-lib main.zig -target wasm32-freestanding \
+zig build-exe main.zig -target wasm32-freestanding -fno-entry -rdynamic \
     --initial-memory=65536 --max-memory=65536 --stack 2048 \
-    -dynamic -OReleaseFast -femit-bin=app.wasm
+    -OReleaseFast -femit-bin=app.wasm
 
 # Optimize (optional)
 wasm-opt -Os app.wasm -o app.wasm

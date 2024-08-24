@@ -10,7 +10,7 @@ export function setup(): void {
 
 export function loop(): void {
   const time = dev.millis()
-  dev.println(time.toString())
+  dev.println(time.toString() + ' Blink')
 
   dev.digitalWrite(LED, dev.HIGH)
   dev.delay(100)

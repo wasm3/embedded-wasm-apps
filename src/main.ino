@@ -5,7 +5,7 @@
  * Date:        30.11.2021
  */
 
-#include "wasm-rt-helpers.h"
+#include "wasm-app.h"
 
 #if defined(PARTICLE)
 
@@ -27,57 +27,58 @@ void platform_init() {}
 
 #endif
 
+w2c_app wasm_app;
 
-IMPORT_IMPL_WIRING(Z_stopWdtZ_vv, void, (void), {
+void w2c_wiring_stopWdt(struct w2c_wiring*) {
 #if defined(ESP8266)
     ESP.wdtDisable();
     *((volatile uint32_t*) 0x60000900) &= ~(1); // Hardware WDT OFF
 #elif defined(ESP32)
     disableCore0WDT();
 #endif
-});
+}
 
-IMPORT_IMPL_WIRING(Z_delayZ_vi, void, (u32 t), {
+void w2c_wiring_delay(struct w2c_wiring*, u32 t) {
     delay(t);
-});
+}
 
-IMPORT_IMPL_WIRING(Z_millisZ_iv, u32, (void), {
+u32 w2c_wiring_millis(struct w2c_wiring*) {
     return millis();
-});
+}
 
-IMPORT_IMPL_WIRING(Z_pinModeZ_vii, void, (u32 pin, u32 mode), {
+void w2c_wiring_pinMode(struct w2c_wiring*, u32 pin, u32 mode) {
     switch (mode) {
     case 0: pinMode(pin, INPUT);        break;
     case 1: pinMode(pin, OUTPUT);       break;
     case 2: pinMode(pin, INPUT_PULLUP); break;
     }
-});
+}
 
-IMPORT_IMPL_WIRING(Z_digitalWriteZ_vii, void, (u32 pin, u32 value), {
+void w2c_wiring_digitalWrite(struct w2c_wiring*, u32 pin, u32 value) {
     digitalWrite(pin, value);
-});
+}
 
-
-IMPORT_IMPL_WIRING(Z_printZ_vii, void, (wasm_ptr buf, u32 len), {
-    Serial.write((const uint8_t*)MEMACCESS(buf), len);
-});
+void w2c_wiring_print(struct w2c_wiring*, u32 offset, u32 len) {
+    Serial.write((const uint8_t*)wasm_app.w2c_memory.data + offset, len);
+}
 
 void setup()
 {
     Serial.begin(115200);
     platform_init();
 
-    delay(500);
+    delay(2000);
 
     Serial.println("Initializing WebAssembly...");
 
-    wasm_init();
+    wasm_rt_init();
+    wasm2c_app_instantiate(&wasm_app, NULL);
 
-    wasm_Z_setupZ_vv();
+    w2c_app_setup(&wasm_app);
 }
 
 void loop()
 {
-    wasm_Z_loopZ_vv();
+    w2c_app_loop(&wasm_app);
 }
 
