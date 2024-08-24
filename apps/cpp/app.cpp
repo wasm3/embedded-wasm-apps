@@ -1,5 +1,5 @@
 
-#include "wiring_api.h"
+#include "wiring.h"
 
 int LED_BUILTIN = 2;
 

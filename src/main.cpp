@@ -9,12 +9,13 @@
 
 #if defined(PARTICLE)
 
+#include "Particle.h"
+
 SYSTEM_MODE(SEMI_AUTOMATIC)
 SYSTEM_THREAD(ENABLED)
 
 void platform_init() {
     Particle.connect();
-    delay(1000); // Additional delay for serial monitor
 }
 
 IMPORT_IMPL_PARTICLE(Z_publishZ_vi, void, (wasm_ptr ev), {
@@ -22,6 +23,8 @@ IMPORT_IMPL_PARTICLE(Z_publishZ_vi, void, (wasm_ptr ev), {
 });
 
 #else
+
+#include "Arduino.h"
 
 void platform_init() {}
 
