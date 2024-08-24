@@ -1,3 +1,5 @@
+set -e
+
 # Compile
 wasicc  -Os                                                   \
         -z stack-size=4096 -Wl,--initial-memory=65536         \

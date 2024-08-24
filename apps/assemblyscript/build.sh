@@ -1,3 +1,5 @@
+set -e
+
 # Compile
 npm run build
 

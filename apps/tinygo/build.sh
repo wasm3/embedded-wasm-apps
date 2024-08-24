@@ -1,3 +1,5 @@
+set -e
+
 # Prepare
 export GOROOT=/opt/go-v1.23.0
 export PATH=/opt/tinygo-v0.33.0/bin:$GOROOT/bin:$PATH

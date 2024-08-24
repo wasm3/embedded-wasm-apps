@@ -1,3 +1,5 @@
+set -e
+
 # Compile
 cargo build --release
 cp ./target/wasm32-unknown-unknown/release/app.wasm ./

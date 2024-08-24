@@ -1,4 +1,5 @@
 const w = @import("./wiring.zig");
+const std = @import("std");
 
 const LED = 2;
 
@@ -7,8 +8,15 @@ export fn setup() void {
     w.pinMode(LED, w.PinMode.OUTPUT);
 }
 
+var buf: [128]u8 = undefined;
+
 export fn loop() void {
-    w.println("Blink");
+    const t = w.millis();
+    if (std.fmt.bufPrint(&buf, "{} Blink", .{t})) |res| {
+        w.println(res);
+    } else |err| {
+        err catch {};
+    }
 
     w.digitalWrite(LED, w.Digital.LOW);
     w.delay(900);
