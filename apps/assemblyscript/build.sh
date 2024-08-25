@@ -1,5 +1,10 @@
 set -e
 
+# Install AssemblyScript toolchain if needed
+if [ ! -d node_modules ] ; then
+    npm i
+fi
+
 # Compile
 npm run build
 

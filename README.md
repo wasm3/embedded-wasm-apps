@@ -66,9 +66,6 @@ Ensure the required tools are in your `PATH`:
 
 ```sh
 # AssemblyScript v0.27 (needs Node.js)
-cd apps/assemblyscript
-npm install
-cd ../..
 make APP=assemblyscript
 
 # Rust 1.80.1
