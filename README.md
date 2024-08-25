@@ -103,7 +103,7 @@ pio device monitor --quiet
 ## Building and running with `Particle`
 
 Requires [`particle-cli`](https://docs.particle.io/tutorials/developer-tools/cli/).
-Should work on all Particle devices i.e. `Spark Core`, `Photon`, `Electron`, `Argon`, `Boron`:
+Should work on all Particle devices i.e. `Spark Core`, `Photon`, `Electron`, `Argon`, `Boron`, `P2 / Photon2`:
 
 ```sh
 particle flash MyDevice ./src/
