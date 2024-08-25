@@ -65,6 +65,11 @@ void w2c_wiring_print(struct w2c_wiring*, u32 offset, u32 len) {
     Serial.write((const uint8_t*)wasm_app.w2c_memory.data + offset, len);
 }
 
+void os_print_last_error(const char* msg) {
+    Serial.println(msg);
+    for(;;) { delay(100); }  // Wait forever
+}
+
 __attribute__((weak))
 void w2c_app_0x5Finitialize(w2c_app*) {}
 

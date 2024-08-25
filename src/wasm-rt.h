@@ -623,6 +623,8 @@ uint32_t wasm_rt_grow_externref_table(wasm_rt_externref_table_t*,
                                       uint32_t delta,
                                       wasm_rt_externref_t init);
 
+void os_print_last_error(const char* msg);
+
 #ifdef __cplusplus
 }
 #endif

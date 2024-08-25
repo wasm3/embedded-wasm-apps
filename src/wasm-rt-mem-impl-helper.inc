@@ -89,7 +89,12 @@ void MEMORY_API_NAME(wasm_rt_allocate_memory)(MEMORY_TYPE* memory,
   }
   memory->data = addr;
 #else
-  memory->data = calloc(byte_length, 1);
+  void* addr = calloc(byte_length, 1);
+  if (!addr) {
+    os_print_last_error("memory allocation failed.");
+    abort();
+  }
+  memory->data = addr;
 #endif
 }
 
