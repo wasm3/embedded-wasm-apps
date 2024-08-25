@@ -8,7 +8,8 @@ Examples include [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/dev
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/cplusplus.svg" width="18" height="18" /> C/C++](apps/cpp/app.cpp), 
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/go.svg" width="18" height="18" /> TinyGo](apps/tinygo/app.go), 
 [<img src="https://cdn.rawgit.com/simple-icons/simple-icons/develop/icons/zig.svg" width="18" height="18" /> Zig](apps/zig/main.zig), 
-Virgil, 
+[Virgil](apps/virgil/app.v3), 
+[WAT](apps/wat/main.wat), 
 etc.
 
 ## How it works
