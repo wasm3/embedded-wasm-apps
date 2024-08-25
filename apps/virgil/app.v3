@@ -1,0 +1,47 @@
+
+import component wiring {
+    def millis() -> int;
+    def delay(t: int);
+    def pinMode(pin: int, mode: int);
+    def digitalWrite(pin: int, value: int);
+    def print(data: Pointer, len: int);
+}
+
+def HIGH            = 1;
+def LOW             = 0;
+def INPUT           = 0x0;
+def OUTPUT          = 0x1;
+def INPUT_PULLUP    = 0x2;
+
+def print(s: string) {
+    wiring.print(Pointer.atContents(s), s.length);
+}
+def println(s: string) {
+    print(s);
+    print("\n");
+}
+
+
+var LED_BUILTIN = 2;
+
+export def setup() {
+    println("Virgil is running");
+
+    wiring.pinMode(LED_BUILTIN, OUTPUT);
+}
+
+export def loop() {
+    // TODO
+    //var sb = StringBuilder.new().put1("%d Blink\n", wiring.millis());
+    //println(sb.toString());
+
+    println("Blink");
+
+    wiring.digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+    wiring.delay(100);                        // wait 100ms
+    wiring.digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+    wiring.delay(900);                        // wait 900ms
+}
+
+def main() {
+}
