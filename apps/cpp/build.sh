@@ -1,11 +1,12 @@
 set -e
 
+export PATH=/opt/wasi-sdk/bin:$PATH
+
 # Compile
-wasicc  -Os                                                   \
-        -z stack-size=4096 -Wl,--initial-memory=65536         \
-        -Wl,--allow-undefined-file=wiring_api.syms            \
-        -Wl,--strip-all -Wl,--no-entry -nostdlib              \
-        -o app.wasm app.cpp
+clang --target=wasm32 -nostdlib -z stack-size=4096      \
+    -Wl,--no-entry -Wl,--stack-first -Wl,--strip-all    \
+    -Wl,--initial-memory=65536 -Wl,-z,stack-size=4096   \
+    -Os -o app.wasm app.cpp
 
 # Optimize (optional)
 wasm-opt -O3 app.wasm -o app.wasm

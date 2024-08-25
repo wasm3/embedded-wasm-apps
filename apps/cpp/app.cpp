@@ -3,7 +3,6 @@
 
 int LED_BUILTIN = 2;
 
-WASM_EXPORT
 void setup() {
   println("🤩 C++ is running!");
 
@@ -11,10 +10,13 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 }
 
+char buff[128];
+
 // the loop function runs over and over again forever
-WASM_EXPORT
 void loop() {
-  println("Blink");
+  size_t offset = itoa(millis(), buff, 10);
+  strcpy(buff + offset, " Blink");
+  println(buff);
 
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
   delay(100);                        // wait 100ms
