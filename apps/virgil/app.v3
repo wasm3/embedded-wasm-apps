@@ -25,7 +25,7 @@ def println(s: string) {
 var LED_BUILTIN = 2;
 
 export def setup() {
-    println("Virgil is running");
+    println("\xE2\x9C\xA8 Virgil is running");
 
     wiring.pinMode(LED_BUILTIN, OUTPUT);
 }

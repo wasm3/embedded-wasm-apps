@@ -53,7 +53,7 @@ extern "C" {
 
 #ifdef __STDC_VERSION__
 #if __STDC_VERSION__ >= 201112L
-#define WASM_RT_C11_AVAILABLE
+//#define WASM_RT_C11_AVAILABLE
 #endif
 #endif
 
