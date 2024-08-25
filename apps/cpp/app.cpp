@@ -1,7 +1,7 @@
 
 #include "wiring.h"
 
-int LED_BUILTIN = 2;
+const int LED_BUILTIN = 2;
 
 void setup() {
   println("🤩 C++ is running!");
