@@ -25,7 +25,7 @@ public:
 
     FixedBufferStream& operator<<(const char* str) {
         // Append string to buffer
-        append(str, strlen(str));
+        append(str, __builtin_strlen(str));
         return *this;
     }
 
@@ -44,12 +44,6 @@ public:
     }
 
 private:
-    size_t strlen(const char* str) {
-        const char* s = str;
-        while (*s) ++s;
-        return s - str;
-    }
-
     size_t intToString(int value, char* buffer) {
         char* p = buffer;
         if (value < 0) {
@@ -78,10 +72,11 @@ private:
         if (size_ + len >= capacity_) {
             len = capacity_ - size_ - 1; // Reserve space for null terminator
         }
-        for (size_t i = 0; i < len; ++i) {
-            buffer_[size_++] = str[i];
+        if (len > 0) {
+            __builtin_memcpy(buffer_ + size_, str, len);
+            size_ += len;
+            buffer_[size_] = '\0'; // Ensure null termination
         }
-        buffer_[size_] = '\0';
     }
 };
 
