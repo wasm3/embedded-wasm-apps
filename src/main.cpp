@@ -7,30 +7,26 @@
 
 #include "wasm-app.h"
 
-#if defined(PARTICLE)
-
-#include "Particle.h"
-
-SYSTEM_MODE(SEMI_AUTOMATIC)
-SYSTEM_THREAD(ENABLED)
-
-void platform_init() {
-    Particle.connect();
-}
-
-IMPORT_IMPL_PARTICLE(Z_publishZ_vi, void, (wasm_ptr ev), {
-    Particle.publish((const char*)MEMACCESS(ev));
-});
-
-#else
-
-#include "Arduino.h"
-
-void platform_init() {}
-
-#endif
-
 w2c_app wasm_app;
+
+#if defined(PARTICLE)
+    #include "Particle.h"
+
+    SYSTEM_MODE(SEMI_AUTOMATIC)
+    SYSTEM_THREAD(ENABLED)
+
+    void platform_init() {
+        Particle.connect();
+    }
+
+    void w2c_wiring_publish(struct w2c_wiring*, u32 offset) {
+        Particle.publish((const char*)wasm_app.w2c_memory.data + offset);
+    }
+#else
+    #include "Arduino.h"
+
+    void platform_init() {}
+#endif
 
 void w2c_wiring_stopWdt(struct w2c_wiring*) {
 #if defined(ESP8266)

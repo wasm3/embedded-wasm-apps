@@ -1,5 +1,6 @@
 
-#include "wiring.h"
+#include <wiring.h>
+#include <FixedBufferStream.h>
 
 const int LED_BUILTIN = 2;
 
@@ -10,13 +11,12 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 }
 
-char buff[128];
-
 // the loop function runs over and over again forever
 void loop() {
-  size_t offset = itoa(millis(), buff, 10);
-  strcpy(buff + offset, " Blink");
-  println(buff);
+  static char buffer[128];
+  FixedBufferStream ss(buffer, sizeof(buffer));
+  ss << millis() << " Blink" << ss.endl;
+  print(ss.get_buffer());
 
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
   delay(100);                        // wait 100ms
