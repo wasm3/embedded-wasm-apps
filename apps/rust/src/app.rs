@@ -1,4 +1,3 @@
-#![no_std]
 
 mod wiring;
 use wiring::*;
@@ -13,7 +12,8 @@ pub extern fn setup() {
 
 #[no_mangle]
 pub extern fn r#loop() {
-    println("Blink");
+    let s = format!("{} Blink", millis());
+    println(&s[..]);
 
     digitalWrite(LED, HIGH);
     delay(100);
