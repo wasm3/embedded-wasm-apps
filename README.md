@@ -91,7 +91,7 @@ make APP=virgil
 make APP=wat
 ```
 
-Wasm file comparison:
+Resulting WASM file comparison:
 
 | AS       | C/C++   | Coremark | Rust    | TinyGo  | Virgil  | WAT     | Zig     |
 | -------- | ------- | -------- | ------- | ------- | ------- | ------- | ------- |
