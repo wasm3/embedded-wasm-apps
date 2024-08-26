@@ -75,12 +75,28 @@ make APP=rust
 # C/C++ (needs Clang)
 make APP=cpp
 
+# C99 Coremark (needs Clang)
+make APP=coremark
+
 # TinyGo v0.33.0 + Go v1.23.0
 make APP=tinygo
 
 # Zig v0.13.0
 make APP=zig
+
+# Virgil (Aeneas III-7.1632)
+make APP=virgil
+
+# WAT
+make APP=wat
 ```
+
+Wasm file comparison:
+
+| AS       | C/C++   | Coremark | Rust    | TinyGo  | Virgil  | WAT     | Zig     |
+| -------- | ------- | -------- | ------- | ------- | ------- | ------- | ------- |
+| 3951     | 864     | 10800    | 12264   | 1227    | 315     | 223     | 1057    |
+
 
 ## Building and running with `PlatformIO`
 
@@ -104,7 +120,7 @@ Requires [`particle-cli`](https://docs.particle.io/tutorials/developer-tools/cli
 Should work on all Particle devices i.e. `Spark Core`, `Photon`, `Electron`, `Argon`, `Boron`, `P2 / Photon2`:
 
 ```sh
-particle flash MyDevice ./src/
+particle flash MyDevice ./src/*
 
 # Open serial monitor
 particle serial monitor --follow

@@ -12,20 +12,15 @@ w2c_app wasm_app;
 #if defined(PARTICLE)
     #include "Particle.h"
 
-    SYSTEM_MODE(SEMI_AUTOMATIC)
     SYSTEM_THREAD(ENABLED)
-
-    void platform_init() {
-        Particle.connect();
-    }
 
     void w2c_wiring_publish(struct w2c_wiring*, u32 offset) {
         Particle.publish((const char*)wasm_app.w2c_memory.data + offset);
     }
-#else
+#elif defined(ARDUINO)
     #include "Arduino.h"
-
-    void platform_init() {}
+#else
+    #error "Platform not supported"
 #endif
 
 void w2c_wiring_stopWdt(struct w2c_wiring*) {
@@ -75,8 +70,10 @@ void w2c_app_0x5Fstart(w2c_app*) {}
 void setup()
 {
     Serial.begin(115200);
-    platform_init();
-
+#if defined(PARTICLE)
+    Particle.connect();
+    waitUntil(Particle.connected);
+#endif
     delay(2000);
 
     Serial.println("Initializing WebAssembly...");
