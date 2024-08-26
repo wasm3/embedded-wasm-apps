@@ -22,14 +22,14 @@ DEVICE   ?= "Photon"
 DEV_TYPE ?= photon
 
 particle_compile: all
-	@particle compile $(DEV_TYPE) ./src
+	@particle compile $(DEV_TYPE) ./src/*
 
 particle_erase:
 	@particle usb dfu
 	@particle flash --usb tinker
 
 particle_upload: all
-	@particle flash $(DEVICE) ./src/
+	@particle flash $(DEVICE) ./src/*
 
 particle_upload_usb: particle_compile
 	@particle usb dfu
