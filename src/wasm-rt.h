@@ -325,7 +325,7 @@ typedef enum {
 } wasm_rt_trap_t;
 
 /** Value types. Used to define function signatures. */
-typedef enum {
+enum {
   WASM_RT_I32,
   WASM_RT_I64,
   WASM_RT_F32,
@@ -333,7 +333,9 @@ typedef enum {
   WASM_RT_V128,
   WASM_RT_FUNCREF,
   WASM_RT_EXTERNREF,
-} wasm_rt_type_t;
+};
+
+typedef int wasm_rt_type_t;
 
 /**
  * A generic function pointer type, both for Wasm functions (`code`)

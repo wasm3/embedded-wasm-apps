@@ -11,7 +11,6 @@ all:
 
 clean:
 	-@rm ./src/wasm-app*
-	-@rm apps/*/app.wasm apps/*/app.wat
 	-@rm -rf ./build ./.pio
 	-@rm *_firmware_*.bin
 
